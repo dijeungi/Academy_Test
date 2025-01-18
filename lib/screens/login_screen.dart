@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/user_info.dart';
 import '../models/token_info.dart';
 import '../widgets/snack_bar.dart'; // 스낵바 위젯 임포트
-import 'dice_screen.dart'; // DiceScreen 임포트 추가
+import 'profile_screen.dart'; // ProfileScreen 임포트 추가
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,11 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
   UserInfo? userInfo;
   String? responseError;
   bool isLogin = false;
-  bool isButtonEnabled = false; // 버튼 활성화 여부 변수 추가
+  bool isButtonEnabled = false;
+  String selectedLanguage = '한국어';
 
   TextEditingController namectl = TextEditingController();
   TextEditingController passwordctl = TextEditingController();
 
+  // 버튼 활성화
   @override
   void initState() {
     super.initState();
@@ -68,26 +70,40 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  void dispose() {
-    namectl.dispose();
-    passwordctl.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/logo.png'), // 이미지 경로
-              fit: BoxFit.cover,
+        title: const Text('로그인'),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (String value) {
+              setState(() {
+                selectedLanguage = value;
+              });
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem(value: '한국어', child: Text('한국어')),
+                const PopupMenuItem(value: '영어', child: Text('영어')),
+                const PopupMenuItem(value: '일본어', child: Text('일본어')),
+                const PopupMenuItem(value: '중국어', child: Text('중국어')),
+              ];
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+              ),
+              child: Row(
+                children: [
+                  Text(selectedLanguage),
+                  Icon(Icons.keyboard_arrow_down),
+                ],
+              ),
             ),
           ),
-        ),
-        title: Text('로그인', style: TextStyle(color: Colors.white)), // 제목 텍스트 색상
-        centerTitle: true,
+          SizedBox(width: 10),
+        ],
       ),
       body: GestureDetector(
         onTap: () {
@@ -96,6 +112,15 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              // 로고 추가
+              Container(
+                margin: EdgeInsets.only(top: 50.0),
+                child: Image.asset(
+                  'assets/logo.png',
+                  width: 180,
+                  height: 100,
+                ),
+              ),
               Form(
                 child: Theme(
                   data: ThemeData(
@@ -132,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         // ================================== 로그인 버튼 =================================
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: isButtonEnabled ? Color.fromARGB(255, 3, 199, 90) : Colors.grey,// 버튼 색상 변경
+                            backgroundColor: isButtonEnabled ? Color.fromARGB(255, 3, 199, 90) : Colors.grey,
                             minimumSize: Size(200, 50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -148,25 +173,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             loginRequest(context).then((_) {
                               if (isLogin) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const ProfileScreen(),
-                                  ),
-                                );
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
                               } else {
                                 showSnackBar(context, responseError!);
                               }
                             });
-                          } : null, // 버튼 비활성화
-                          child: Text(
-                            '로그인', // 버튼에 표시할 텍스트
-                            style: TextStyle(
-                              fontFamily: 'Naver', // 폰트 패밀리 설정
-                              fontSize: 20.0, // 글자 크기 조정
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                            ),
+                          } : null, // 버튼 비활성화 처리
+                          child: Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                            size: 35.0,
                           ),
                         ),
                         if (responseError != null)

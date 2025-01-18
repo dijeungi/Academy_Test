@@ -39,6 +39,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String updatedName = nameController.text;
     String updatedEmail = emailController.text;
 
+    // 상태 업데이트
+    setState(() {
+      currentName = updatedName;
+      currentEmail = updatedEmail;
+    });
+
     showSnackBar(context, '프로필이 업데이트 되었습니다!\n이름: $updatedName\n이메일: $updatedEmail');
   }
 
@@ -81,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(fontSize: 18.0),
             ),
             Text(
-              '이메일: $currentEmail'
+              '이메일: $currentEmail',
               style: TextStyle(fontSize: 18.0),
             ),
           ],

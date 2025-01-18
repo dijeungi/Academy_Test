@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController namectl = TextEditingController();
   TextEditingController passwordctl = TextEditingController();
 
-  // 버튼 활성화
+// ========================== 로그인 버튼 활성화 ================================
   @override
   void initState() {
     super.initState();
@@ -38,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
       isButtonEnabled = namectl.text.isNotEmpty && passwordctl.text.isNotEmpty;
     });
   }
+
 
   Future<void> loginRequest(BuildContext context) async {
     TokenInfo provider = context.read<TokenInfo>();
